@@ -3,27 +3,360 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список справ</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Мій Todo List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat {
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 5px;
+        }
+
+        .add-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        #new-todo-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        #new-todo-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        #add-todo-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #add-todo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        #add-todo-btn:active {
+            transform: translateY(0);
+        }
+
+        #todo-list {
+            list-style: none;
+        }
+
+        #todo-list li {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        #todo-list li:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .todo-check {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        #todo-list label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        #todo-list label.completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .delete-btn {
+            padding: 8px 16px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #ff3838;
+            transform: scale(1.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .add-section {
+                flex-direction: column;
+            }
+
+            #add-todo-btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>Мій список справ</h1>
+        <h1>📝 Мої справи</h1>
         
-        <div class="controls">
-            <button id="add-todo-btn">Додати нову справу</button>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-label">Всього</div>
+                <div class="stat-value" id="total-count">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Не виконано</div>
+                <div class="stat-value" id="incomplete-count">0</div>
+            </div>
         </div>
-        
-        <ul id="todo-list">
-            </ul>
-        
-        <div class="counter">
-            <p>Загальна кількість справ: <span id="total-count">0</span></p>
-            <p>Не зроблено: <span id="incomplete-count">0</span></p>
+
+        <div class="add-section">
+            <input 
+                type="text" 
+                id="new-todo-input" 
+                placeholder="Додати нову справу..."
+                autocomplete="off"
+            >
+            <button id="add-todo-btn">Додати</button>
         </div>
+
+        <ul id="todo-list"></ul>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const todoListEl = document.getElementById('todo-list');
+        const totalCountEl = document.getElementById('total-count');
+        const incompleteCountEl = document.getElementById('incomplete-count');
+        const addTodoBtn = document.getElementById('add-todo-btn');
+        const newTodoInput = document.getElementById('new-todo-input');
+        const STORAGE_KEY = 'my-todo-list';
+
+        let todos = loadTodos();
+
+        function newTodo() {
+            const taskText = newTodoInput.value.trim();
+            
+            if (taskText) {
+                const newTodo = {
+                    id: Date.now(), 
+                    text: taskText,
+                    completed: false 
+                };
+                
+                todos.push(newTodo);
+                saveTodos();
+                
+                newTodoInput.value = '';
+                newTodoInput.focus();
+                
+                render();
+                updateCounter();
+            }
+        }
+
+        addTodoBtn.addEventListener('click', newTodo);
+        
+        newTodoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                newTodo();
+            }
+        });
+
+        function renderTodo(todo) {
+            const isCompleted = todo.completed;
+            const checkedAttribute = isCompleted ? 'checked' : '';
+            const labelClass = isCompleted ? 'class="completed"' : '';
+            
+            return `
+                <li data-id="${todo.id}">
+                    <input type="checkbox" id="todo-${todo.id}" class="todo-check" ${checkedAttribute} data-id="${todo.id}">
+                    <label for="todo-${todo.id}" ${labelClass}>${escapeHtml(todo.text)}</label>
+                    <button class="delete-btn" data-id="${todo.id}">Видалити</button>
+                </li>
+            `;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function render() {
+            if (todos.length === 0) {
+                todoListEl.innerHTML = `
+                    <div class="empty-state">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p>Немає справ. Додайте нову!</p>
+                    </div>
+                `;
+            } else {
+                const todoStrings = todos.map(renderTodo); 
+                const html = todoStrings.join('');
+                todoListEl.innerHTML = html;
+            }
+        }
+
+        function updateCounter() {
+            totalCountEl.textContent = todos.length;
+            const incompleteTodos = todos.filter(todo => !todo.completed);
+            incompleteCountEl.textContent = incompleteTodos.length;
+        }
+
+        function deleteTodo(id) {
+            todos = todos.filter(todo => todo.id !== id);
+            saveTodos(); 
+            render();
+            updateCounter();
+        }
+
+        function checkTodo(id) {
+            todos = todos.map(todo => {
+                if (todo.id === id) {
+                    return {
+                        ...todo, 
+                        completed: !todo.completed 
+                    };
+                }
+                return todo;
+            });
+            
+            saveTodos();
+            render();
+            updateCounter();
+        }
+
+        todoListEl.addEventListener('click', (event) => {
+            const id = Number(event.target.dataset.id);
+            
+            if (event.target.classList.contains('delete-btn')) {
+                deleteTodo(id);
+            }
+            
+            if (event.target.classList.contains('todo-check')) {
+                checkTodo(id);
+            }
+        });
+
+        function saveTodos() {
+            const dataString = JSON.stringify(todos);
+            localStorage.setItem(STORAGE_KEY, dataString);
+        }
+
+        function loadTodos() {
+            try {
+                const savedData = localStorage.getItem(STORAGE_KEY);
+                if (savedData) {
+                    return JSON.parse(savedData);
+                }
+            } catch (e) {
+                console.error('Помилка завантаження todos:', e);
+            }
+            return [];
+        }
+
+        render();
+        updateCounter();
+    </script>
 </body>
 </html>
